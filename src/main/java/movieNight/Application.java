@@ -15,8 +15,8 @@ public class Application {
         SpringApplication.run(Application.class, args);
         CalenderConnection c = new CalenderConnection();
         c.showCalender();
-        MovieController m = new MovieController();
-        String message = m.addNewMovie("tt1856010");
-        System.out.println(message);
+        //MovieController m = new MovieController();
+        //String message = m.addNewMovie("tt1856010");
+        //System.out.println(message);
     }
 }

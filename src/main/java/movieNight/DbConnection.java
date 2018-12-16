@@ -1,20 +1,25 @@
 package movieNight;
 
 import movieNight.entities.Movie;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import movieNight.repositories.MovieRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-//public class DbConnection {
-//    public @ResponseBody
-//    String addNewUser (@RequestParam String name
-//            , @RequestParam String email) {
-//        // @ResponseBody means the returned String is the response, not a view name
-//        // @RequestParam means it is a parameter from the GET or POST request
-//
-//        Movie m = new Movie();
-//        m.setTitle(name);
-//        m.setEmail(email);
-//        movieRepository.save(m);
-//        return "Saved";
-//    }
-//}
+@Controller
+public class DbConnection {
+    @Autowired
+    private MovieRepository movieRepository;
+
+    public DbConnection(){
+    }
+    @RequestMapping(path="/lina")
+    public Boolean isMovieInDb(String id){
+
+        Movie movie = movieRepository.findById(id);
+        if(movie==null){
+            return false;
+        }
+        return true;
+    }
+}

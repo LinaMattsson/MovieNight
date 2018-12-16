@@ -1,5 +1,6 @@
 package movieNight.controllers;
 
+import movieNight.DbConnection;
 import movieNight.OmdbConnection;
 import movieNight.entities.Movie;
 //import movieNight.repositories.MovieRepository;
@@ -28,8 +29,6 @@ public class MovieController {
         //@RequestParam String id, @RequestParam String title, @RequestParam String year,@RequestParam String plot,@RequestParam String genre,@RequestParam String runtime,@RequestParam String rating,@RequestParam String language) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-
-        Movie m = omdbConnection.getMoviesById(id);
 //        m.setId(id);
 //        m.setTitle("lina");
 //        m.setYear("lina");
@@ -38,9 +37,15 @@ public class MovieController {
 //        m.setRuntime("lina");
 //        m.setRating("lina");
 //        m.setLanguage("lina");
+        DbConnection dbConnection = new DbConnection();
+        if(movieRepository.findById(id)!=null){
+            return "Already in Database";
+        }
+        Movie m = omdbConnection.getMoviesById(id);
         movieRepository.save(m);
         return "Saved";
     }
+
     @GetMapping(path="/hej")
     public @ResponseBody String getHej(){
         return "hej";
