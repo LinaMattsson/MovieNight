@@ -24,6 +24,12 @@ public class MovieController {
     private MovieRepository movieRepository;
     private OmdbConnection omdbConnection = new OmdbConnection();
 
+    public MovieController(MovieRepository movieRepository) {
+        this.movieRepository = movieRepository;
+    }
+    public MovieController(){
+    }
+
     @GetMapping(path="/add") // Map ONLY GET Requests
     public @ResponseBody String addNewMovie(@RequestParam String id){
         //@RequestParam String id, @RequestParam String title, @RequestParam String year,@RequestParam String plot,@RequestParam String genre,@RequestParam String runtime,@RequestParam String rating,@RequestParam String language) {

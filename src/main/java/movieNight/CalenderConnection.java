@@ -14,9 +14,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
-import com.google.api.services.calendar.model.Events;
+import com.google.api.services.calendar.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,12 +25,13 @@ import java.security.GeneralSecurityException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class CalenderConnection {
-
+    private List<String> calenderIds = new ArrayList<>();
 
     private static final Logger log = LoggerFactory.getLogger(CalenderConnection.class);
 
@@ -69,6 +68,9 @@ public class CalenderConnection {
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
+    public void getFreeTime(){
+
+    }
 
     public void showCalender() throws GeneralSecurityException, IOException {
         // Build a new authorized API client service.
@@ -79,31 +81,79 @@ public class CalenderConnection {
 
         // List the next 10 events from the primary calendar.
         DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = service.events().list("s05uo4rrlcpfdu3ukaj8hogdh4@group.calendar.google.com")
-                .setMaxResults(10)
-                .setTimeMin(now)
-                .setOrderBy("startTime")
-                .setSingleEvents(true)
-                .execute();
-        System.out.println(events);
-        List<Event> items = events.getItems();
 
-        if (items.isEmpty()) {
-            System.out.println("No upcoming events found.");
-        } else {
-            System.out.println("Upcoming events");
-            for (Event event : items) {
-                DateTime start = event.getStart().getDateTime();
-                DateTime end = event.getEnd().getDateTime();
-                if (start == null) {
-                    start = event.getStart().getDate();
-                }
-                if (end == null) {
-                    end = event.getEnd().getDate();
-                }
-                System.out.printf("%s, start time: (%s), end time: (%s)\n", event.getSummary(), start, end);
-            }
+        // Create items for request
+        List<FreeBusyRequestItem> freeBusyItems = new ArrayList<>();
+
+        for (String id : calenderIds) {
+            FreeBusyRequestItem item = new FreeBusyRequestItem();
+            item.setId(id);
+            freeBusyItems.add(item);
         }
+
+        // Create request
+        FreeBusyRequest req = new FreeBusyRequest();
+        req.setItems(freeBusyItems);
+        req.setTimeMin(now);
+        req.setTimeZone("CET");
+        DateTime timeMax = new DateTime(String.valueOf(DateTime.parseRfc3339("2019-01-01T00:00:01Z")));
+
+        req.setTimeMax(timeMax);
+
+        FreeBusyResponse freeResp = service.freebusy().query(req).execute();
+
+        System.out.println(freeResp.toPrettyString());
+
+//        Events events = service.events().list("s05uo4rrlcpfdu3ukaj8hogdh4@group.calendar.google.com")
+//                .setMaxResults(10)
+//                .setTimeMin(now)
+//                .setOrderBy("startTime")
+//                .setSingleEvents(true)
+//                .execute();
+//        System.out.println(events);
+//        List<Event> items = events.getItems();
+//
+//        Events events2 = service.events().list("asd503saoqvo14clp799dtenps@group.calendar.google.com")
+//                .setMaxResults(10)
+//                .setTimeMin(now)
+//                .setOrderBy("startTime")
+//                .setSingleEvents(true)
+//                .execute();
+//        System.out.println(events2);
+//        List<Event> items2 = events2.getItems();
+//
+//        if (items.isEmpty()) {
+//            System.out.println("No upcoming events found.");
+//        } else {
+//            System.out.println("Upcoming events");
+//            for (Event event : items) {
+//                DateTime start = event.getStart().getDateTime();
+//                DateTime end = event.getEnd().getDateTime();
+//                if (start == null) {
+//                    start = event.getStart().getDate();
+//                }
+//                if (end == null) {
+//                    end = event.getEnd().getDate();
+//                }
+//                System.out.printf("%s, start time: (%s), end time: (%s)\n", event.getSummary(), start, end);
+//            }
+//        }
+//        if (items2.isEmpty()) {
+//            System.out.println("No upcoming events found.");
+//        } else {
+//            System.out.println("Upcoming events");
+//            for (Event event : items2) {
+//                DateTime start = event.getStart().getDateTime();
+//                DateTime end = event.getEnd().getDateTime();
+//                if (start == null) {
+//                    start = event.getStart().getDate();
+//                }
+//                if (end == null) {
+//                    end = event.getEnd().getDate();
+//                }
+//                System.out.printf("%s, start time: (%s), end time: (%s)\n", event.getSummary(), start, end);
+//            }
+//        }
 
         service.events().insert("primary", event()).execute();
         System.out.println("hej2");
@@ -124,5 +174,9 @@ public class CalenderConnection {
             System.out.println("hej");
             return event;
 
+    }
+
+    public void addCalender(String calenderId) {
+        calenderIds.add(calenderId);
     }
 }
