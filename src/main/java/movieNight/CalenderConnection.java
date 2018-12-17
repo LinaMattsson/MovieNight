@@ -141,8 +141,8 @@ public class CalenderConnection {
 
     public boolean checkIfGivenDateIsFree(String checkDateTimeStart, String checkDateTimeEnd){
         for (int i = 0; i <bookedEvents.size() ; i++) {
-            String startDateTime = bookedEvents.get(i).startTime.toString();
-            String endDateTime = bookedEvents.get(i).endTime.toString();
+            String startDateTime = bookedEvents.get(i).getStartTime().toString();
+            String endDateTime = bookedEvents.get(i).getEndTime().toString();
             LocalDateTime startTimeDate = LocalDateTime.parse(startDateTime.substring(0,16));
             LocalDateTime endTimeDate = LocalDateTime.parse(endDateTime.substring(0,16));
             LocalDateTime requestStart = LocalDateTime.parse(checkDateTimeStart);

@@ -3,8 +3,8 @@ package movieNight;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Bookedevent {
-    String startTime;
-    String endTime;
+    private String startTime;
+    private String endTime;
 
     public Bookedevent(String start, String end){
         this.startTime = start;
@@ -18,25 +18,12 @@ public class Bookedevent {
                 '}';
     }
 
-//    public Bookedevent(String startTime, String endTime){
-//
-//        this.startTime = startTime;
-//        this.endTime = endTime;
-//    }
-//
-//    public String getStartTime() {
-//        return startTime;
-//    }
-//
-//    public void setStartTime(String startTime) {
-//        this.startTime = startTime;
-//    }
-//
-//    public String getEndTime() {
-//        return endTime;
-//    }
-//
-//    public void setEndTime(String endTime) {
-//        this.endTime = endTime;
-//    }
+
+    public String getStartTime() {
+        return startTime;
+   }
+
+    public String getEndTime() {
+        return endTime;
+    }
 }
