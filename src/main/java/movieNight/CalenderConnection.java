@@ -1,6 +1,7 @@
 package movieNight;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -15,6 +16,9 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,14 +28,13 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.time.ZoneId;
+import java.util.*;
 
 public class CalenderConnection {
     private List<String> calenderIds = new ArrayList<>();
+    List<Bookedevent> bookedEvents = new ArrayList<>();
+
 
     private static final Logger log = LoggerFactory.getLogger(CalenderConnection.class);
 
@@ -102,83 +105,78 @@ public class CalenderConnection {
 
         FreeBusyResponse freeResp = service.freebusy().query(req).execute();
 
-        System.out.println(freeResp.toPrettyString());
+        System.out.println(freeResp.toPrettyString()+ "detta är fint");
+        //System.out.println(freeResp);
 
-//        Events events = service.events().list("s05uo4rrlcpfdu3ukaj8hogdh4@group.calendar.google.com")
-//                .setMaxResults(10)
-//                .setTimeMin(now)
-//                .setOrderBy("startTime")
-//                .setSingleEvents(true)
-//                .execute();
-//        System.out.println(events);
-//        List<Event> items = events.getItems();
-//
-//        Events events2 = service.events().list("asd503saoqvo14clp799dtenps@group.calendar.google.com")
-//                .setMaxResults(10)
-//                .setTimeMin(now)
-//                .setOrderBy("startTime")
-//                .setSingleEvents(true)
-//                .execute();
-//        System.out.println(events2);
-//        List<Event> items2 = events2.getItems();
-//
-//        if (items.isEmpty()) {
-//            System.out.println("No upcoming events found.");
-//        } else {
-//            System.out.println("Upcoming events");
-//            for (Event event : items) {
-//                DateTime start = event.getStart().getDateTime();
-//                DateTime end = event.getEnd().getDateTime();
-//                if (start == null) {
-//                    start = event.getStart().getDate();
-//                }
-//                if (end == null) {
-//                    end = event.getEnd().getDate();
-//                }
-//                System.out.printf("%s, start time: (%s), end time: (%s)\n", event.getSummary(), start, end);
-//            }
-//        }
-//        if (items2.isEmpty()) {
-//            System.out.println("No upcoming events found.");
-//        } else {
-//            System.out.println("Upcoming events");
-//            for (Event event : items2) {
-//                DateTime start = event.getStart().getDateTime();
-//                DateTime end = event.getEnd().getDateTime();
-//                if (start == null) {
-//                    start = event.getStart().getDate();
-//                }
-//                if (end == null) {
-//                    end = event.getEnd().getDate();
-//                }
-//                System.out.printf("%s, start time: (%s), end time: (%s)\n", event.getSummary(), start, end);
-//            }
-//        }
-        calenderIds.forEach(id -> {
-            try {
-                service.events().insert(id, event()).execute();
-                System.out.println(id);
-            } catch (IOException e) {
-                e.printStackTrace();
+        ObjectMapper mapper = new ObjectMapper();
+
+
+        JsonObject allCalendars = new JsonParser().parse(freeResp.toPrettyString()).getAsJsonObject();
+        for (int i = 0; i <calenderIds.size() ; i++) {
+            JsonObject calender = allCalendars.getAsJsonObject("calendars").get(calenderIds.get(i)).getAsJsonObject();
+            JsonArray busyList = calender.getAsJsonArray("busy");
+            for (int j = 0; j < busyList.size(); j++) {
+                JsonObject tempEvent = busyList.get(j).getAsJsonObject();
+                String start = tempEvent.get("start").getAsString();
+                String end = tempEvent.get("end").getAsString();
+                bookedEvents.add(new Bookedevent(start, end));
+                System.out.println("Start: " + start + " End: " + end);
             }
-        });
+        }
+        boolean ledigdag = checkIfGivenDateIsFree("2018-12-20T00:05", "2018-12-23T02:03");
+        boolean ledigdag2 = checkIfGivenDateIsFree("2018-12-19T01:00", "2018-12-19T03:00");
+        System.out.println("Är dagen ledig?: "+ ledigdag);
+        System.out.println("Är dagen ledig?: "+ ledigdag2);
+
+//        calenderIds.forEach(id -> {
+//            try {
+//                service.events().insert(id, event("Middag Ny", "spagetti", 2018, 12,16, 17,00, 2018,12,16,20,30)).execute();
+//                //System.out.println(id);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        });
         //service.events().insert("primary", event()).execute();
-        System.out.println("hej2");
     }
 
-        public static Event event(){
+    public boolean checkIfGivenDateIsFree(String checkDateTimeStart, String checkDateTimeEnd){
+        for (int i = 0; i <bookedEvents.size() ; i++) {
+            String startDateTime = bookedEvents.get(i).startTime.toString();
+            String endDateTime = bookedEvents.get(i).endTime.toString();
+            LocalDateTime startTimeDate = LocalDateTime.parse(startDateTime.substring(0,16));
+            LocalDateTime endTimeDate = LocalDateTime.parse(endDateTime.substring(0,16));
+            LocalDateTime requestStart = LocalDateTime.parse(checkDateTimeStart);
+            LocalDateTime requestEnd = LocalDateTime.parse(checkDateTimeEnd);
 
-            Instant now = LocalDateTime.of(2018, 12, 12, 10, 10).toInstant(ZoneOffset.UTC);
+            //check if there are an event thats going on over more then just the day you will book
+            if(startTimeDate.isAfter(requestStart)&&endTimeDate.isBefore(requestEnd)){
+                return false;
+            }
+            else if(startTimeDate.isBefore(requestStart) && endTimeDate.isAfter(requestStart)|| startTimeDate.isBefore(requestEnd) && endTimeDate.isAfter(requestEnd)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+        public static Event event(String summary, String description, Integer startYear, Integer startMonth, Integer startDay, Integer startHour, Integer startMinute, Integer endYear, Integer endMonth, Integer endDay, Integer endHour, Integer endMinute){
+            ZoneId timeZoneId = ZoneId.of("CET");
+
+            Instant now = LocalDateTime.of(startYear, startMonth, startDay, startHour, startMinute).atZone(timeZoneId).toInstant();
             DateTime now2 = new DateTime(Date.from(now));
-            Instant end = LocalDateTime.of(2018, 12, 16, 10, 10).toInstant(ZoneOffset.UTC);
+            Instant end = LocalDateTime.of(endYear, endMonth, endDay, endHour, endMinute).atZone(timeZoneId).toInstant();
+
+//            System.out.println(end.atZone(timeZoneId));
+//            System.out.println(end);
+
             DateTime end2 = new DateTime(Date.from(end));
             Event event = new Event();
+
             event.setStart(new EventDateTime().setDateTime(now2));
             // event.setStart(new EventDateTime().setDate(new DateTime(Date.from(now).)));
             event.setEnd(new EventDateTime().setDateTime(end2));
-            event.setDescription("Middag");
-            event.setSummary("Middag");
-            System.out.println("hej");
+            event.setDescription(description);
+            event.setSummary(summary);
             return event;
 
     }
