@@ -154,8 +154,15 @@ public class CalenderConnection {
 //                System.out.printf("%s, start time: (%s), end time: (%s)\n", event.getSummary(), start, end);
 //            }
 //        }
-
-        service.events().insert("primary", event()).execute();
+        calenderIds.forEach(id -> {
+            try {
+                service.events().insert(id, event()).execute();
+                System.out.println(id);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        //service.events().insert("primary", event()).execute();
         System.out.println("hej2");
     }
 

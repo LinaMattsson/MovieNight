@@ -17,6 +17,7 @@ public class Application {
 
         c.addCalender("s05uo4rrlcpfdu3ukaj8hogdh4@group.calendar.google.com");
         //c.addCalender("asd503saoqvo14clp799dtenps@group.calendar.google.com");
+        c.addCalender("knutlina@gmail.com");
 
         c.showCalender();
 
