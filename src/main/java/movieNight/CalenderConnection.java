@@ -48,7 +48,7 @@ public class CalenderConnection {
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR); //Read only är borttaget
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    private static final String CREDENTIALS_FILE_PATH = "credentials.json";
 
     /**
      * Creates an authorized Credential object.
