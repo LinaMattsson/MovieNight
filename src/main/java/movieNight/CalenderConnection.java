@@ -99,7 +99,7 @@ public class CalenderConnection {
         req.setItems(freeBusyItems);
         req.setTimeMin(now);
         req.setTimeZone("CET");
-        DateTime timeMax = new DateTime(String.valueOf(DateTime.parseRfc3339("2019-01-01T00:00:01Z")));
+        DateTime timeMax = new DateTime(String.valueOf(DateTime.parseRfc3339("2019-02-01T00:00:01Z")));
 
         req.setTimeMax(timeMax);
 
@@ -123,8 +123,8 @@ public class CalenderConnection {
                 System.out.println("Start: " + start + " End: " + end);
             }
         }
-        boolean ledigdag = checkIfGivenDateIsFree("2018-12-20T00:05", "2018-12-23T02:03");
-        boolean ledigdag2 = checkIfGivenDateIsFree("2018-12-19T01:00", "2018-12-19T03:00");
+        boolean ledigdag = checkIfGivenDateIsFree("2019-01-20T00:05", "2019-01-20T02:03");
+        boolean ledigdag2 = checkIfGivenDateIsFree("2019-01-08T19:00", "2019-01-08T20:00");
         System.out.println("Är dagen ledig?: "+ ledigdag);
         System.out.println("Är dagen ledig?: "+ ledigdag2);
 

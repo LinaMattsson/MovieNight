@@ -15,9 +15,11 @@ public class Application {
         SpringApplication.run(Application.class, args);
         CalenderConnection c = new CalenderConnection();
 
-        c.addCalender("s05uo4rrlcpfdu3ukaj8hogdh4@group.calendar.google.com");
+        //c.addCalender("s05uo4rrlcpfdu3ukaj8hogdh4@group.calendar.google.com");
         //c.addCalender("asd503saoqvo14clp799dtenps@group.calendar.google.com");
         c.addCalender("knutlina@gmail.com");
+        c.addCalender("lin4.m4ttsson@gmail.com");
+        https://calendar.google.com/calendar/embed?src=lin4.m4ttsson%40gmail.com&ctz=Europe%2FStockholm
 
         c.showCalender();
 
