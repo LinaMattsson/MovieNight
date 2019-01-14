@@ -1,4 +1,4 @@
-package movieNight.entities;
+package testMovieNight.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

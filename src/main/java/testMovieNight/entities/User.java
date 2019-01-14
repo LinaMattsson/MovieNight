@@ -1,25 +1,29 @@
-package movieNight.entities;
+package testMovieNight.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table (name="user")
 public class User {
     @Id
-    @JsonProperty("mail")
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Integer i;
     private String mail;
-    @JsonProperty("name")
     private String name;
-    @JsonProperty("accessToken")
     private String accessToken;
-    @JsonProperty("refreshToken")
     private String refreshToken;
-    @JsonProperty("expirationDate")
-    private String expirationDate;
+    private Long expirationDate;
+
+    public User(){
+
+    }
+    public User(String mail, String name, String accessToken, String refreshToken, Long expirationDate){
+        this.mail = mail;
+        this.name = name;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.expirationDate = expirationDate;
+    }
 
     public String getMail() {
         return mail;
@@ -53,11 +57,11 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public String getExpirationDate() {
+    public Long getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(Long expirationDate) {
         this.expirationDate = expirationDate;
     }
 }

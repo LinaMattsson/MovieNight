@@ -1,7 +1,7 @@
-package movieNight.controllers;
+package testMovieNight.controllers;
 
-import movieNight.entities.RESTLogg;
-import movieNight.repositories.RESTLoggRepository;
+import testMovieNight.entities.RESTLogg;
+import testMovieNight.repositories.RESTLoggRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

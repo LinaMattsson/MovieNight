@@ -1,10 +1,9 @@
-package movieNight.controllers;
+package testMovieNight.controllers;
 
-import movieNight.DbConnection;
-import movieNight.OmdbConnection;
-import movieNight.entities.Movie;
-//import movieNight.repositories.MovieRepository;
-import movieNight.repositories.MovieRepository;
+import testMovieNight.OmdbConnection;
+import testMovieNight.entities.Movie;
+//import testMovieNight.repositories.MovieRepository;
+import testMovieNight.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,30 +30,14 @@ public class MovieController {
     }
 
     @GetMapping(path="/add") // Map ONLY GET Requests
-    public @ResponseBody String addNewMovie(@RequestParam String id){
-        //@RequestParam String id, @RequestParam String title, @RequestParam String year,@RequestParam String plot,@RequestParam String genre,@RequestParam String runtime,@RequestParam String rating,@RequestParam String language) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-//        m.setId(id);
-//        m.setTitle("lina");
-//        m.setYear("lina");
-//        m.setPlot("lina");
-//        m.setGenre("lina");
-//        m.setRuntime("lina");
-//        m.setRating("lina");
-//        m.setLanguage("lina");
-        DbConnection dbConnection = new DbConnection();
-        if(movieRepository.findById(id)!=null){
-            return "Already in Database";
+    public @ResponseBody Movie addNewMovie(@RequestParam String id){
+        Movie m = movieRepository.findById(id);
+        if(m != null){
+            return m;
         }
-        Movie m = omdbConnection.getMoviesById(id);
+        m = omdbConnection.getMoviesById(id);
         movieRepository.save(m);
-        return "Saved";
-    }
-
-    @GetMapping(path="/hej")
-    public @ResponseBody String getHej(){
-        return "hej";
+        return m;
     }
 
     @GetMapping(path="/all")
@@ -64,14 +47,10 @@ public class MovieController {
     }
     @GetMapping(path="/byTitle")
     public @ResponseBody List<Movie> showMoviesByTitle(@RequestParam String title){
+        System.out.println("Halllllååå");
         List<Movie> movieList = new ArrayList<>();
         movieList = omdbConnection.getMoviesByName(title);
         return movieList;
     }
-//    @GetMapping(path="/byYear")
-//    public @ResponseBody List<Movie> showMoviesByYear(@RequestParam String year){
-//        List<Movie> movieList = new ArrayList<>();
-//        movieList = omdbConnection.getMoviesByYear(year);
-//        return movieList;
-//    }
+
 }

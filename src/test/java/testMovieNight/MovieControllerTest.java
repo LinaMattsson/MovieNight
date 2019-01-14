@@ -1,10 +1,8 @@
-package movieNight;
+package testMovieNight;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import javax.persistence.EntityManager;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import movieNight.controllers.*;
-import movieNight.repositories.MovieRepository;
-import movieNight.entities.Movie;
+import testMovieNight.controllers.*;
+import testMovieNight.repositories.MovieRepository;
+import testMovieNight.entities.Movie;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest(showSql = false)

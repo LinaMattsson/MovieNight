@@ -1,13 +1,11 @@
-package movieNight;
+package testMovieNight;
 
-import movieNight.entities.Movie;
-import movieNight.entities.MovieList;
-import movieNight.repositories.MovieRepository;
+import testMovieNight.entities.Movie;
+import testMovieNight.entities.MovieList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OmdbConnection {

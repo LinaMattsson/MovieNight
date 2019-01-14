@@ -1,4 +1,4 @@
-package movieNight.entities;
+package testMovieNight.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
@@ -21,7 +21,7 @@ public class Movie {
     private String genre;
     @JsonProperty("Runtime")
     private String runtime;
-    @JsonProperty("Rating")
+    @JsonProperty("imdbRating")
     private String rating;
     @JsonProperty("Language")
     private String language;
