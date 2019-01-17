@@ -1,5 +1,7 @@
 package testMovieNight.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import testMovieNight.OmdbConnection;
 import testMovieNight.entities.Movie;
 //import testMovieNight.repositories.MovieRepository;
@@ -29,28 +31,36 @@ public class MovieController {
     public MovieController(){
     }
 
-    @GetMapping(path="/add") // Map ONLY GET Requests
-    public @ResponseBody Movie addNewMovie(@RequestParam String id){
+    @GetMapping(path="/add")
+    public @ResponseBody ResponseEntity <Movie>  addNewMovie(@RequestParam String id){
         Movie m = movieRepository.findById(id);
         if(m != null){
-            return m;
+            return new ResponseEntity<>(m,HttpStatus.OK);
         }
         m = omdbConnection.getMoviesById(id);
         movieRepository.save(m);
-        return m;
+        return new ResponseEntity<>(m, HttpStatus.OK);
     }
 
     @GetMapping(path="/all")
-    public @ResponseBody Iterable<Movie> getAllMovies() {
+    public @ResponseBody ResponseEntity<Iterable<Movie>> getAllMovies() {
         // This returns a JSON or XML with the users
-        return movieRepository.findAll();
+        return new ResponseEntity<>(movieRepository.findAll(), HttpStatus.OK);
     }
     @GetMapping(path="/byTitle")
-    public @ResponseBody List<Movie> showMoviesByTitle(@RequestParam String title){
-        System.out.println("Halllllååå");
+    public @ResponseBody
+    ResponseEntity <List<Movie>> showMoviesByTitle(@RequestParam String title){
         List<Movie> movieList = new ArrayList<>();
-        movieList = omdbConnection.getMoviesByName(title);
-        return movieList;
+        try {
+            movieList = omdbConnection.getMoviesByName(title);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        if(movieList==null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(movieList, HttpStatus.OK);
     }
 
 }

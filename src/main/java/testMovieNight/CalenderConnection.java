@@ -13,6 +13,8 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import testMovieNight.entities.User;
 import testMovieNight.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +37,10 @@ public class CalenderConnection {
     UserRepository userRepository;
 
     @RequestMapping(value = "/storeauthcode", method = RequestMethod.POST)
-    public String storeauthcode(@RequestBody String code, @RequestHeader("X-Requested-With") String encoding) {
+    public ResponseEntity<String> storeauthcode(@RequestBody String code, @RequestHeader("X-Requested-With") String encoding) {
         if (encoding == null || encoding.isEmpty()) {
             // Without the `X-Requested-With` header, this request could be forged. Aborts.
-            return "Error, wrong headers";
+            return new ResponseEntity<>("Error, wrong headers", HttpStatus.BAD_REQUEST);
         }
 
         GoogleTokenResponse tokenResponse = null;
@@ -142,7 +144,7 @@ public class CalenderConnection {
             }
         }
 
-        return "OK";
+        return new ResponseEntity<>("OK",HttpStatus.OK);
     }
 
 
@@ -183,7 +185,7 @@ public class CalenderConnection {
                 Events events = null;
                 try {
                     events = calendar.events().list("primary")
-                            .setMaxResults(10)
+                            .setMaxResults(30)
                             .setTimeMin(fromNow)
                             .setOrderBy("startTime")
                             .setSingleEvents(true)
@@ -218,8 +220,7 @@ public class CalenderConnection {
 
 
     @RequestMapping(value = "/lookForFreeTime", method = RequestMethod.GET)
-    public List<LocalDateTime> getFreeDates(){
-        System.out.println("i bakend");
+    public ResponseEntity<List<LocalDateTime>> getFreeDates(){
         List<Bookedevent> busyDates= getBusyDates();
         List<LocalDateTime> freeDates = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
@@ -233,7 +234,10 @@ public class CalenderConnection {
            freeDates.add(start);
           }
         }
-        return freeDates;
+        if (freeDates.size()==0){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(freeDates, HttpStatus.OK);
     }
 
 
@@ -269,8 +273,6 @@ public class CalenderConnection {
 
     public EventDateTime convertDateTimeToEventDateTime(DateTime dt){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        String formatDateTime = localdt.format(formatter);
-//        DateTime dt = new DateTime(formatDateTime);
         EventDateTime edt;
         edt = new EventDateTime().setTimeZone("CET").setDateTime(dt);
         return edt;

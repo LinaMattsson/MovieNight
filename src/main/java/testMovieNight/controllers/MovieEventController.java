@@ -5,6 +5,8 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import testMovieNight.CalenderConnection;
 import testMovieNight.entities.MovieEvent;
@@ -35,6 +37,7 @@ public class MovieEventController {
     public String setDateTimeToEvent(@RequestParam String eventStart){
         //LocalDateTime time = LocalDateTime.now();
         DateTime start = new DateTime(eventStart);
+        start = c.plusHours(start, -1);
         DateTime eventEnd = c.plusHours(start, 4);
         EventDateTime Estart = c.convertDateTimeToEventDateTime(start);
         EventDateTime Eend = c.convertDateTimeToEventDateTime(eventEnd);
@@ -45,25 +48,28 @@ public class MovieEventController {
     }
 
     @RequestMapping(value = "/bookEvent", method = RequestMethod.GET)
-    public boolean bookEvent(){
+    public ResponseEntity<Boolean> bookEvent(){
 
         boolean didBook=false;
         List<Calendar> calendars = c.getCalendars();
         Event event = new Event();
         event.setStart(MovieEvent.getInstance().getEventStart());
         event.setEnd(MovieEvent.getInstance().getEventEnd());
+        event.setDescription(MovieEvent.getInstance().getMovieTitle());
+        event.setSummary("Movie Night");
         for(Calendar calendar : calendars) {
             try {
                 calendar.events().insert("primary", event).execute(); //????? hittade på själv typ
                 didBook = true;
             } catch (IOException e) {
                 e.printStackTrace();
+                return  new ResponseEntity<>(didBook, HttpStatus.EXPECTATION_FAILED);
             }
         }
         MovieEvent.getInstance().setMovieTitle(null);
         MovieEvent.getInstance().setEventStart(null);
         MovieEvent.getInstance().setEventEnd(null);
-        return didBook;
+        return new ResponseEntity<>(didBook, HttpStatus.OK);
     }
 
 }

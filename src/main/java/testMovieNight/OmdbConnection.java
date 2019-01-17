@@ -21,8 +21,13 @@ public class OmdbConnection {
         MovieList response = restTemplate.getForObject(
                 "http://www.omdbapi.com/?s="+search+"&apikey=6540b93c",
                 MovieList.class);
-        List<Movie> movies = response.getMovies();
-        movies.forEach(movie -> log.info(movie.toString()));
+        List<Movie> movies;
+        try {
+            movies = response.getMovies();
+        }//movies.forEach(movie -> log.info(movie.toString()));
+        catch (Exception e){
+            movies = null;
+        }
         return movies;
     }
 

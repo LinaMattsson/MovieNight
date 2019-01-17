@@ -78,10 +78,13 @@ $('#searchMovieButton').click(function(){
         },
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(result) {
-            console.log(result)
+            //console.log(result)
             document.getElementById("showMovieList").innerHTML = "";
             console.log('inne där jag tror')
             result.forEach(c => $('#showMovieList').append("<li>"+c.Title+"<button class='showTest' id = '"+c.imdbID+"'>"+c.imdbID+"</button></li>"))
+        },
+        error: function (result) {
+            console.log("error" + result.httpRequestStatusCode)
         },
         processData: false,
         data: "title="+search
