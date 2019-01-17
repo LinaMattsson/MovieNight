@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Axios is optional, include it if you want to use it instead of $.ajax (POST) -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+
+    <!-- This will contain your application's javascript code-->
+    <script src="/main.js" defer></script>
+</head>
+<body>
+<h1>Hello</h1>
+<button id="signinButton">Link a Google Calendar</button>
+<div id = "showUsers"></div>
+<br>
+<button id = "findDates">Show available nights</button>
+<div id="showDates"><ul></ul></div>
+
+<h3>Search for movie</h3>
+<input id = "movieSearch" type="text">
+<button id="searchMovieButton">search</button>
+<div id = "showMovies"><ul id = "showMovieList"></ul></div>
+<div id = showOneMovie></div>
+<div id = "eventPreview"><ul></ul></div>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-package movieNight.entities;
+package testMovieNight.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,7 +9,6 @@ public class MovieList {
     private List<Movie> movies;
 
     public MovieList(){
-
     }
 
     public List<Movie> getMovies() {

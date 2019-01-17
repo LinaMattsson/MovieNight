@@ -1,13 +1,11 @@
-package movieNight;
+package testMovieNight;
 
-import movieNight.entities.Movie;
-import movieNight.entities.MovieList;
-import movieNight.repositories.MovieRepository;
+import testMovieNight.entities.Movie;
+import testMovieNight.entities.MovieList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OmdbConnection {
@@ -23,8 +21,13 @@ public class OmdbConnection {
         MovieList response = restTemplate.getForObject(
                 "http://www.omdbapi.com/?s="+search+"&apikey=6540b93c",
                 MovieList.class);
-        List<Movie> movies = response.getMovies();
-        movies.forEach(movie -> log.info(movie.toString()));
+        List<Movie> movies;
+        try {
+            movies = response.getMovies();
+        }//movies.forEach(movie -> log.info(movie.toString()));
+        catch (Exception e){
+            movies = null;
+        }
         return movies;
     }
 

@@ -1,12 +1,12 @@
-package movieNight;
+package testMovieNight;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.api.client.util.DateTime;
 
 public class Bookedevent {
-    private String startTime;
-    private String endTime;
+    private DateTime startTime;
+    private DateTime endTime;
 
-    public Bookedevent(String start, String end){
+    public Bookedevent(DateTime start, DateTime end){
         this.startTime = start;
         this.endTime = end;
     }
@@ -19,11 +19,11 @@ public class Bookedevent {
     }
 
 
-    public String getStartTime() {
+    public DateTime getStartTime() {
         return startTime;
    }
 
-    public String getEndTime() {
+    public DateTime getEndTime() {
         return endTime;
     }
 }
