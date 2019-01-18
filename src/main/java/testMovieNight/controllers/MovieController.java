@@ -1,5 +1,6 @@
 package testMovieNight.controllers;
 
+import org.hibernate.validator.internal.metadata.core.AnnotationProcessingOptionsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import testMovieNight.OmdbConnection;
@@ -37,7 +38,11 @@ public class MovieController {
         if(m != null){
             return new ResponseEntity<>(m,HttpStatus.OK);
         }
-        m = omdbConnection.getMoviesById(id);
+
+            m = omdbConnection.getMoviesById(id);
+        if(m==null) {
+            return new ResponseEntity<>(m, HttpStatus.BAD_REQUEST);
+        }
         movieRepository.save(m);
         return new ResponseEntity<>(m, HttpStatus.OK);
     }

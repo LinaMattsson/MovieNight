@@ -115,11 +115,12 @@ public class CalenderConnection {
                         .build();
 
         DateTime now = new DateTime(System.currentTimeMillis());
+        DateTime inAMonth = new DateTime(System.currentTimeMillis()+30*86400000);
         Events events = null;
         try {
             events = calendar.events().list("primary")
-                    .setMaxResults(10)
                     .setTimeMin(now)
+                    .setTimeMax(inAMonth)
                     .setOrderBy("startTime")
                     .setSingleEvents(true)
                     .execute();
